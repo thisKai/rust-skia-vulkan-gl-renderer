@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["kai <thiskaiguy@gmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+skulpin = { version = "0.9", default-features = false, features = ["skia_complete", "skulpin_winit" ] }
+skia-safe = {version = "^0.27", features = ["textlayout", "vulkan", "gl"] }
+glutin = "0.24"
+gl = "0.14"
