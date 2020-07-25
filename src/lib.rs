@@ -52,6 +52,12 @@ impl WindowRenderer {
             Self::Gl(renderer) => renderer.scale_factor(),
         }
     }
+    pub fn window(&self) -> &winit::window::Window {
+        match self {
+            Self::Skulpin(renderer) => &renderer.winit_window,
+            Self::Gl(renderer) => renderer.windowed_context.window(),
+        }
+    }
 }
 
 #[derive(Debug)]
