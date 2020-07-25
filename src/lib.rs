@@ -1,7 +1,6 @@
 use {
     skulpin::{
         winit::{
-            self,
             dpi::{LogicalSize, PhysicalSize},
             event_loop::EventLoopWindowTarget,
         },
@@ -10,7 +9,7 @@ use {
     std::{cell::RefCell, convert::TryInto},
 };
 
-pub use skia_safe;
+pub use {skia_safe, skulpin::winit};
 
 pub enum WindowRenderer {
     Skulpin(SkulpinRenderer),
