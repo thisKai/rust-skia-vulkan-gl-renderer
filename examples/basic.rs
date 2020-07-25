@@ -3,7 +3,8 @@ pub fn main() {
     let event_loop = winit::event_loop::EventLoop::new();
 
     let window_size = winit::dpi::LogicalSize::new(800, 600);
-    let renderer = WindowRenderer::new(&event_loop, window_size);
+    let window_builder = winit::window::WindowBuilder::new().with_inner_size(window_size);
+    let renderer = WindowRenderer::new(window_builder, &event_loop);
 
     event_loop.run(move |event, _, control_flow| match event {
         winit::event::Event::WindowEvent {

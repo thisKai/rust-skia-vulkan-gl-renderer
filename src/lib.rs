@@ -1,9 +1,6 @@
 use {
     skulpin::{
-        winit::{
-            dpi::{LogicalSize, PhysicalSize},
-            event_loop::EventLoopWindowTarget,
-        },
+        winit::{dpi::PhysicalSize, event_loop::EventLoopWindowTarget},
         CoordinateSystem, CreateRendererError,
     },
     std::{cell::RefCell, convert::TryInto},
@@ -17,15 +14,18 @@ pub enum WindowRenderer {
 }
 
 impl WindowRenderer {
-    pub fn new(event_loop: &EventLoopWindowTarget<()>, size: LogicalSize<u32>) -> Self {
-        SkulpinRenderer::new(event_loop, size)
+    pub fn new(
+        window_builder: winit::window::WindowBuilder,
+        event_loop: &EventLoopWindowTarget<()>,
+    ) -> Self {
+        SkulpinRenderer::new(window_builder.clone(), event_loop)
             .map(Self::Skulpin)
             .unwrap_or_else(|e| {
                 eprintln!(
                     "Error during skulpin renderer construction: {:?}, Using OpenGL.",
                     e
                 );
-                Self::Gl(GlRenderer::new(event_loop, size))
+                Self::Gl(GlRenderer::new(window_builder, event_loop))
             })
     }
     pub fn resize(&self, size: PhysicalSize<u32>) {
@@ -66,12 +66,10 @@ pub struct SkulpinRenderer {
 }
 impl SkulpinRenderer {
     pub fn new(
+        window_builder: winit::window::WindowBuilder,
         event_loop: &EventLoopWindowTarget<()>,
-        size: LogicalSize<u32>,
     ) -> Result<Self, CreateRendererError> {
-        let winit_window = winit::window::WindowBuilder::new()
-            .with_title("Skulpin")
-            .with_inner_size(size)
+        let winit_window = window_builder
             .build(&event_loop)
             .expect("Failed to create window");
         let skulpin_window = skulpin::WinitWindow::new(&winit_window);
@@ -111,12 +109,11 @@ pub struct GlRenderer {
     surface: RefCell<skia_safe::Surface>,
 }
 impl GlRenderer {
-    pub fn new(event_loop: &EventLoopWindowTarget<()>, size: LogicalSize<u32>) -> Self {
+    pub fn new(
+        window_builder: winit::window::WindowBuilder,
+        event_loop: &EventLoopWindowTarget<()>,
+    ) -> Self {
         use gl::types::*;
-
-        let wb = glutin::window::WindowBuilder::new()
-            .with_title("GL")
-            .with_inner_size(size);
 
         let cb = glutin::ContextBuilder::new()
             .with_depth_buffer(0)
@@ -125,7 +122,7 @@ impl GlRenderer {
             .with_double_buffer(Some(true))
             .with_gl_profile(glutin::GlProfile::Core);
 
-        let windowed_context = cb.build_windowed(wb, &event_loop).unwrap();
+        let windowed_context = cb.build_windowed(window_builder, &event_loop).unwrap();
         let windowed_context = unsafe { windowed_context.make_current().unwrap() };
 
         let pixel_format = windowed_context.get_pixel_format();
