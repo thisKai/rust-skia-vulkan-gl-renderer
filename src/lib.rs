@@ -14,9 +14,9 @@ pub enum WindowRenderer {
 }
 
 impl WindowRenderer {
-    pub fn new(
+    pub fn new<E>(
         window_builder: winit::window::WindowBuilder,
-        event_loop: &EventLoopWindowTarget<()>,
+        event_loop: &EventLoopWindowTarget<E>,
     ) -> Self {
         SkulpinRenderer::new(window_builder.clone(), event_loop)
             .map(Self::Skulpin)
@@ -71,9 +71,9 @@ pub struct SkulpinRenderer {
     renderer: RefCell<skulpin::Renderer>,
 }
 impl SkulpinRenderer {
-    pub fn new(
+    pub fn new<E>(
         window_builder: winit::window::WindowBuilder,
-        event_loop: &EventLoopWindowTarget<()>,
+        event_loop: &EventLoopWindowTarget<E>,
     ) -> Result<Self, CreateRendererError> {
         let winit_window = window_builder
             .build(&event_loop)
@@ -115,9 +115,9 @@ pub struct GlRenderer {
     surface: RefCell<skia_safe::Surface>,
 }
 impl GlRenderer {
-    pub fn new(
+    pub fn new<E>(
         window_builder: winit::window::WindowBuilder,
-        event_loop: &EventLoopWindowTarget<()>,
+        event_loop: &EventLoopWindowTarget<E>,
     ) -> Self {
         use gl::types::*;
 
