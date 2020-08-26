@@ -6,6 +6,6 @@ edition = "2018"
 
 [dependencies]
 skulpin = { version = "0.9", default-features = false, features = ["skia_complete", "skulpin_winit" ] }
-skia-safe = {version = "^0.27", features = ["textlayout", "vulkan", "gl"] }
+skia-safe = {version = "*", features = ["textlayout", "vulkan", "gl"] }
 glutin = "0.24"
 gl = "0.14"
